@@ -13,10 +13,11 @@ spec:
     metadata:
       labels:
         app:  sandbox
+        component: resource-manager
     spec:
       serviceAccountName: resource-manager
       containers:
-      - image:  sandbox:latest
+      - image:  sandbox:dev-1
         imagePullPolicy: IfNotPresent
         name:  main-sandbox-container
         resources:
