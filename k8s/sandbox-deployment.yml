@@ -14,10 +14,11 @@ spec:
       labels:
         app:  sandbox
     spec:
+      serviceAccountName: resource-manager
       containers:
       - image:  sandbox:latest
         imagePullPolicy: IfNotPresent
-        name:  sanbox-server
+        name:  main-sandbox-container
         resources:
           limits:
             cpu: "500m"
