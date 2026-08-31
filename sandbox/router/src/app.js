@@ -14,6 +14,7 @@ app.get("/api/status/ready", (req, res) => {
 });
 
 const proxies= {}
+const agentProxies = {}
 
 function getProxy(sandboxID) {
 
@@ -29,15 +30,41 @@ function getProxy(sandboxID) {
     return proxies[sandboxID];
 }
 
+function getAgentProxy(sandboxID) {
+
+    const target = `http://sandbox-service-${sandboxID}:3000`;
+
+    if (!agentProxies[sandboxID]) {
+        agentProxies[sandboxID] = createProxyMiddleware({
+            target,
+            changeOrigin: true,
+            ws: true,
+        });
+    }
+    return agentProxies[sandboxID];
+}
+
 
 
 app.use((req, res, next) => {
   const host = req.headers.host;
-  const sandboxID = host?.split(".")[0];
+  const parts = host?.split(".");
 
+  const sandboxID = parts?.[0];
+  const type = parts?.[1];
 
+  if (type === "agent") {
+    return getAgentProxy(sandboxID)(req, res, next);
+  }
 
-  return getProxy(sandboxID)(req, res, next);
+  if (type === "preview") {
+    return getProxy(sandboxID)(req, res, next);
+  }
+
+  return res.status(404).json({
+    message: "Unknown host",
+    status: "error",
+  });
 });
 
 export default app;
