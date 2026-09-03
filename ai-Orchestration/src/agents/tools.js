@@ -11,7 +11,7 @@ export const listFiles = tool(
         console.log("using list files tool")
         console.log("=================================")
 
-        const response = await axios.get("http://01a0626f-a217-75b7-a639-dd102de368df.agent.localhost/list-files")
+        const response = await axios.get("http://sandbox-service-01a0662f-247b-7799-acc1-8601203a291a:3000/list-files")
 
 
         console.log("=================================")
@@ -34,7 +34,7 @@ export const readFiles = tool(
         console.log("using read files tool with files", files)
         console.log("=================================")
 
-        const response = await axios.get("http://01a0626f-a217-75b7-a639-dd102de368df.agent.localhost/read-files?files=" + files.join(","))
+        const response = await axios.get("http://sandbox-service-01a0662f-247b-7799-acc1-8601203a291a:3000/read-files?files=" + files.join(","))
 
         console.log("=================================")
         console.log("response from read files tool", response.data)
@@ -57,7 +57,7 @@ export const updateFiles = tool(
         console.log("using update files tool with files", files)
         console.log("=================================")
 
-        const response = await axios.patch("http://01a0626f-a217-75b7-a639-dd102de368df.agent.localhost/update-files", {
+        const response = await axios.patch("http://sandbox-service-01a0662f-247b-7799-acc1-8601203a291a:3000/update-files", {
             updates: files
         })
         console.log("=================================")
@@ -85,7 +85,7 @@ export const deleteFiles = tool(
         console.log("using delete files tool with files", files)
         console.log("=================================")
 
-        const response = await axios.delete("http://01a0626f-a217-75b7-a639-dd102de368df.agent.localhost/delete-files?files=" + files.join(","))
+        const response = await axios.delete("http://sandbox-service-01a0662f-247b-7799-acc1-8601203a291a:3000/delete-files?files=" + files.join(","))
 
         console.log("=================================")
         console.log("response from delete files tool", response.data)
