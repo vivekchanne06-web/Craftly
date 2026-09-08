@@ -44,7 +44,31 @@ function getAgentProxy(sandboxID) {
     return agentProxies[sandboxID];
 }
 
+export function handleWebSocketUpgrade(req, socket, head) {
+  const host = req.headers.host;
+  const parts = host?.split(".");
+  const sandboxID = parts?.[0];
+  const type = parts?.[1];
 
+  console.log("🔥 ROUTER WEBSOCKET HANDLER");
+  console.log("host:", host);
+  console.log("sandboxID:", sandboxID);
+  console.log("type:", type);
+  console.log("url:", req.url);
+
+  if (type === "agent") {
+    console.log("➡️ Proxying WebSocket to agent:", sandboxID);
+    return getAgentProxy(sandboxID).upgrade(req, socket, head);
+  }
+
+  if (type === "preview") {
+    console.log("➡️ Proxying WebSocket to preview:", sandboxID);
+    return getProxy(sandboxID).upgrade(req, socket, head);
+  }
+
+  console.log("❌ Unknown WebSocket host:", host);
+  socket.destroy();
+}
 
 app.use((req, res, next) => {
   const host = req.headers.host;

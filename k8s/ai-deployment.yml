@@ -20,10 +20,10 @@ spec:
         resources:
           requests:
             cpu: "250m"
-            memory: "128M"
+            memory: "256Mi"
           limits:
             cpu: "500m"
-            memory: "256M"
+            memory: "512Mi"
         env:
           - name: MISTRALAI_API_KEY
             valueFrom:

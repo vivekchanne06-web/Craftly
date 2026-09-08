@@ -1,22 +1,25 @@
 import axios from 'axios';
-import {tool} from "langchain"
-import { z } from "zod";
- 
+import { tool } from "langchain"
+import * as z from "zod";
+
 
 
 
 export const listFiles = tool(
-    async ({ }) => {
-        console.log("=================================")
-        console.log("using list files tool")
-        console.log("=================================")
+    async ({ }, config) => {
 
-        const response = await axios.get("http://sandbox-service-01a0662f-247b-7799-acc1-8601203a291a:3000/list-files")
+        const writer = config.writer;
 
+        writer("Listing files in the project directory...\n");
 
-        console.log("=================================")
-        console.log("response from list files tool", response.data)
-        console.log("=================================")
+        const response = await axios.get(`http://sandbox-service-${config.context.projectId}:3000/list-files`)
+
+        writer(
+            "Files listed successfully. Files: " +
+            response.data.files.join(",") +
+            "\n"
+        );
+
 
         return JSON.stringify(response.data.files);
     },
@@ -28,17 +31,16 @@ export const listFiles = tool(
 )
 
 export const readFiles = tool(
-    async ({ files: [] }) => {
+    async ({ files = [] }, config) => {
 
-        console.log("=================================")
-        console.log("using read files tool with files", files)
-        console.log("=================================")
+        const writer = config.writer;
 
-        const response = await axios.get("http://sandbox-service-01a0662f-247b-7799-acc1-8601203a291a:3000/read-files?files=" + files.join(","))
+        writer("Reading files: " + files.join(",") + "\n");
 
-        console.log("=================================")
-        console.log("response from read files tool", response.data)
-        console.log("=================================")
+        const response = await axios.get(`http://sandbox-service-${config.context.projectId}:3000/read-files?files=` + files.join(","))
+
+        writer("Files read successfully." + "Files: " + response.data.files.join(",") + "\n");
+
         return JSON.stringify(response.data);
     },
     {
@@ -51,18 +53,15 @@ export const readFiles = tool(
 )
 
 export const updateFiles = tool(
-    async ({ files }) => {
+    async ({ files }, config) => {
+        const writer = config.writer;
+        writer("Updating files: " + files.map(f => f.file).join(",") + "\n");
 
-        console.log("=================================")
-        console.log("using update files tool with files", files)
-        console.log("=================================")
-
-        const response = await axios.patch("http://sandbox-service-01a0662f-247b-7799-acc1-8601203a291a:3000/update-files", {
+        const response = await axios.patch(`http://sandbox-service-${config.context.projectId}:3000/update-files`, {
             updates: files
         })
-        console.log("=================================")
-        console.log("response from update files tool", response.data)
-        console.log("=================================")
+
+        writer("Files updated successfully." + "Files: " + files.map(f => f.file).join(",") + "\n");
 
         return JSON.stringify(response.data.results);
     },
@@ -79,17 +78,15 @@ export const updateFiles = tool(
 )
 
 export const deleteFiles = tool(
-    async ({ files }) => {
+    async ({ files = [] }, config) => {
 
-        console.log("=================================")
-        console.log("using delete files tool with files", files)
-        console.log("=================================")
+        const writer = config.writer;
 
-        const response = await axios.delete("http://sandbox-service-01a0662f-247b-7799-acc1-8601203a291a:3000/delete-files?files=" + files.join(","))
+        writer("Deleting files: " + files.join(",") + "\n");
 
-        console.log("=================================")
-        console.log("response from delete files tool", response.data)
-        console.log("=================================")
+        const response = await axios.delete(`http://sandbox-service-${config.context.projectId}:3000/delete-files?files=` + files.join(","))
+
+        writer("Files deleted successfully." + "Files: " + response.data.files.join(",") + "\n");
 
         return JSON.stringify(response.data);
     },
@@ -104,4 +101,3 @@ export const deleteFiles = tool(
 
 
 
-        
