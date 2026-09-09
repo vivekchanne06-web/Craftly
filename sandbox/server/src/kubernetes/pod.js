@@ -1,7 +1,9 @@
 import { k8sCoreV1Api } from "./config.js";
+import { assertSandboxId } from "./validation.js";
 
 
 export async function createPod(sandboxId) {
+    assertSandboxId(sandboxId);
 
     const podManifest = {
         metadata: {

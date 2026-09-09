@@ -1,6 +1,8 @@
 import { k8sCoreV1Api } from "./config.js";
+import { assertSandboxId } from "./validation.js";
 
 export const createService = async (sandboxId) => {
+    assertSandboxId(sandboxId);
     const serviceManifest = {
         metadata: {
             name: `sandbox-service-${sandboxId}`,

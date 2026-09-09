@@ -7,7 +7,7 @@ import http from 'http';
 import pty from 'node-pty';
 import os from 'os';
 
-const WORKING_DIR = '/workspace';
+const WORKING_DIR = process.env.WORKING_DIR || '/workspace';
 
 const app = express();
 const httpServer = http.createServer(app);
@@ -31,34 +31,59 @@ app.get('/', (req, res) => {
   });
 });
 
-const shell = process.env.SHELL || 'bash';
-
-// Spawn the PTY process
-const ptyProcess = pty.spawn(shell, [], {
-  name: 'xterm-color',
-  cols: 80,
-  rows: 30,
-  cwd: "/workspace",
-  env: process.env
-});
-
-
-ptyProcess.onData((data) => {
-  io.emit('terminal-output', data);
-});
-
-ptyProcess.onExit(({ exitCode, signal }) => {
-  console.log(`PTY process exited with code: ${exitCode}, signal: ${signal}`);
-});
-
 io.on("connection", (socket) => {
   console.log("Client connected: " + socket.id);
+  const shell = process.env.SHELL || 'bash';
+  let ptyProcess;
+  let exited = false;
+
+  try {
+    ptyProcess = pty.spawn(shell, [], {
+      name: 'xterm-color',
+      cols: 80,
+      rows: 30,
+      cwd: WORKING_DIR,
+      env: { ...process.env, TERM: 'xterm-256color' },
+    });
+  } catch (error) {
+    console.error(`Unable to start PTY for ${socket.id}: ${error.message}`);
+    socket.emit("terminal-error", "Unable to start terminal");
+    socket.disconnect(true);
+    return;
+  }
+
+  ptyProcess.onData((data) => {
+    socket.emit('terminal-output', data);
+  });
+
+  ptyProcess.onExit(({ exitCode, signal }) => {
+    exited = true;
+    console.log(`PTY process for ${socket.id} exited with code: ${exitCode}, signal: ${signal}`);
+    socket.emit("terminal-exit", { exitCode, signal });
+  });
 
   socket.on("terminal-input", (data) => {
-    ptyProcess.write(data);
+    if (typeof data === "string" && !exited) {
+      ptyProcess.write(data);
+    }
+  });
+
+  socket.on("terminal-resize", ({ cols, rows } = {}) => {
+    if (
+      !exited &&
+      Number.isInteger(cols) &&
+      Number.isInteger(rows) &&
+      cols > 0 &&
+      rows > 0
+    ) {
+      ptyProcess.resize(cols, rows);
+    }
   });
 
   socket.on("disconnect", () => {
+    if (!exited) {
+      ptyProcess.kill();
+    }
     console.log("Client disconnected: " + socket.id);
   });
 })
