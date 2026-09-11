@@ -15,8 +15,14 @@ build:
       infer:
         - "src/**"
 
+  - image: auth
+    context: auth
+    docker:
+      dockerfile: dockerfile
+    sync:
+      infer:
+        - "src/**"
         
-
   - image: agent
     context: sandbox/agent
     docker:
@@ -47,6 +53,8 @@ manifests:
     - k8s/router-deployment.yml
     - k8s/router.service.yml
     - k8s/rbac.yml
+    - k8s/auth-deployment.yml
+    - k8s/auth.service.yml
 
 portForward:
   - resourceType: Service
