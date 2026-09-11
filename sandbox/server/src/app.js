@@ -3,12 +3,20 @@ import morgan from "morgan";
 import { createPod } from './kubernetes/pod.js';
 import { createService } from './kubernetes/service.js';
 import { v7 as uuid } from "uuid"
+import cors from "cors";
 
 
 
 const app = express();
 
 app.use(morgan("dev"));
+
+app.use(cors({
+    origin: "http://localhost:5173",
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+}));
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 

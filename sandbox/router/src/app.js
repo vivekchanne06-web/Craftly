@@ -2,6 +2,7 @@ import express from "express";
 import morgan from "morgan";
 import { createProxyMiddleware } from "http-proxy-middleware";
 import http from "http";
+import { createProxyServer } from 'httpxy';
 
 const SANDBOX_ID = /^[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?$/;
 const HOST_SUFFIXES = new Map([
@@ -77,6 +78,13 @@ function proxyRequest(req, res, next) {
 
   return sandboxProxy(req, res, next);
 }
+
+const wsProxy = createProxyServer({ changeOrigin: true });
+
+wsProxy.on('error', (err, req, socket) => {
+    console.error('WS proxy error:', err.message);
+    socket?.destroy();
+});
 
 app.use(proxyRequest);
 

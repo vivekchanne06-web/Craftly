@@ -6,6 +6,7 @@ import { Server } from "socket.io";
 import http from 'http';
 import pty from 'node-pty';
 import os from 'os';
+import cors from 'cors';
 
 const WORKING_DIR = process.env.WORKING_DIR || '/workspace';
 
@@ -13,6 +14,14 @@ const app = express();
 const httpServer = http.createServer(app);
 
 app.use(morgan('dev'));
+
+// Enable CORS for all Express HTTP routes so the browser (running at
+// localhost:5173) can call /list-files and other REST endpoints on the agent.
+// Socket.IO already has its own cors config in the Server constructor below.
+app.use(cors({
+  origin: '*',
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+}));
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
