@@ -3,6 +3,7 @@ import morgan from "morgan";
 import { createProxyMiddleware } from "http-proxy-middleware";
 import http from "http";
 import { createProxyServer } from 'httpxy';
+import { refreshTTL } from './config/redis.js';
 
 const SANDBOX_ID = /^[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?$/;
 const HOST_SUFFIXES = new Map([
@@ -67,7 +68,7 @@ function createSandboxProxy() {
 
 const sandboxProxy = createSandboxProxy();
 
-function proxyRequest(req, res, next) {
+async function proxyRequest(req, res, next) {
   const route = getRoute(req.headers.host);
   if (!route) {
     return res.status(404).json({
@@ -75,6 +76,7 @@ function proxyRequest(req, res, next) {
       status: "error",
     });
   }
+  await refreshTTL(route.sandboxId);
 
   return sandboxProxy(req, res, next);
 }
@@ -90,7 +92,7 @@ app.use(proxyRequest);
 
 const server = http.createServer(app);
 
-server.on("upgrade", (req, socket, head) => {
+server.on("upgrade", async (req, socket, head) => {
   const route = getRoute(req.headers.host);
   if (!route) {
     socket.destroy();
@@ -100,6 +102,7 @@ server.on("upgrade", (req, socket, head) => {
   console.log(
     `WS upgrade request: ${req.headers.host}, sandboxId: ${route.sandboxId}, type: ${route.type}`,
   );
+  await refreshTTL(route.sandboxId);
   sandboxProxy.upgrade(req, socket, head);
 });
 
