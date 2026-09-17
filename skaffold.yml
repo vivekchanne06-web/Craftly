@@ -22,7 +22,15 @@ build:
     sync:
       infer:
         - "src/**"
-        
+
+  - image: notification
+    context: notification
+    docker:
+      dockerfile: dockerfile
+    sync:
+      infer:
+        - "src/**"
+
   - image: agent
     context: sandbox/agent
     docker:
@@ -56,6 +64,8 @@ manifests:
     - k8s/auth-deployment.yml
     - k8s/auth.service.yml
     - k8s/secrets.yml
+    - k8s/notification-deployment.yml
+    - k8s/notification.service.yml
    
 
 portForward:
