@@ -6,7 +6,7 @@ import { Strategy as googleStrategy } from "passport-google-oauth20";
 import passport from "passport";
 import cookies from "cookie-parser";
 import authRoutes from "./routes/auth.routes.js";
-
+import cors from 'cors';
 
 
 const app = express();
@@ -16,12 +16,15 @@ app.use(cookies());
 app.use(passport.initialize());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
-
+app.use(cors({
+    origin: "http://localhost:5173",
+    credentials: true
+}));
 
 passport.use(new googleStrategy({
   clientID: process.env.GOOGLE_CLIENT_ID,
   clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-  callbackURL: "http://127.0.0.1/api/auth/google/callback"
+  callbackURL: "http://localhost/api/auth/google/callback"
 }, (accessToken, refreshToken, profile, done) => {
     // Here you would typically find or create a user in your database
     // For this example, we'll just return the profile

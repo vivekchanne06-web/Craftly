@@ -50,6 +50,11 @@ build:
     context: sandbox/template
     docker:
       dockerfile: dockerfile
+  
+  - image: sync-agent
+    context: sandbox/sync-agent
+    docker:
+      dockerfile: dockerfile
 
 manifests:
   rawYaml:

@@ -2,7 +2,7 @@ import { k8sCoreV1Api } from "./config.js";
 import { assertSandboxId } from "./validation.js";
 
 
-export async function createPod(sandboxId) {
+export async function createPod(sandboxId, projectId) {
     assertSandboxId(sandboxId);
 
     const podManifest = {
@@ -34,13 +34,13 @@ export async function createPod(sandboxId) {
                     ]
                 }
 
-            ], 
+            ],
             containers: [
                 {
                     image: "template",
                     imagePullPolicy: "IfNotPresent",
                     name: 'sandbox-container',
-                    ports: [ { containerPort: 5173, name: "http" } ],
+                    ports: [{ containerPort: 5173, name: "http" }],
                     resources: {
                         limits: { cpu: "500m", memory: "1Gi" },
                         requests: { cpu: "250m", memory: "500Mi" }
@@ -56,7 +56,7 @@ export async function createPod(sandboxId) {
                     image: "agent",
                     imagePullPolicy: "IfNotPresent",
                     name: 'agent-container',
-                    ports: [ { containerPort: 3000, name: "http" } ],
+                    ports: [{ containerPort: 3000, name: "http" }],
                     resources: {
                         limits: { cpu: "500m", memory: "1Gi" },
                         requests: { cpu: "250m", memory: "500Mi" }
@@ -67,8 +67,57 @@ export async function createPod(sandboxId) {
                             mountPath: "/workspace"
                         }
                     ]
+                },
+                {
+                    image: "sync-agent",
+                    imagePullPolicy: "IfNotPresent",
+                    name: 'sync-agent-container',
+                    ports: [{ containerPort: 4000, name: "http" }],
+                    resources: {
+                        limits: { cpu: "500m", memory: "1Gi" },
+                        requests: { cpu: "250m", memory: "500Mi" }
+                    },
+                    volumeMounts: [
+                        {
+                            name: 'workspace-volume',
+                            mountPath: '/workspace'
+                        }
+                    ],
+                    env: [
+                        {
+                            name: "PROJECT_ID",
+                            value: projectId
+                        },
+                        {
+                            name: "AWS_ACCESS_KEY_ID",
+                            valueFrom: {
+                                secretKeyRef: {
+                                    name: "aws",
+                                    key: "AWS_ACCESS_KEY_ID"
+                                }
+                            }
+                        },
+                        {
+                            name: "AWS_SECRET_ACCESS_KEY",
+                            valueFrom: {
+                                secretKeyRef: {
+                                    name: "aws",
+                                    key: "AWS_SECRET_ACCESS_KEY"
+                                }
+                            }
+
+                        },
+                        {
+                            name: "AWS_REGION",
+                            valueFrom: {
+                                secretKeyRef: {
+                                    name: "aws",
+                                    key: "AWS_REGION"
+                                }
+                            }
+                        }
+                    ]
                 }
-                
             ]
         }
     }
