@@ -32,27 +32,26 @@ async function downloadFilesFromS3(s3Objects) {
         // Skip if it is a directory placeholder
         if (file.Key.endsWith('/')) continue;
 
-        const getCommand = new GetObjectCommand({
-            Bucket: bucketName,
-            Key: file.Key
-        });
-        const getResponse = await s3Client.send(getCommand);
+        try {
+            const getCommand = new GetObjectCommand({
+                Bucket: bucketName,
+                Key: file.Key
+            });
+            const getResponse = await s3Client.send(getCommand);
 
-        const relativePath = file.Key.replace(`${projectId}/`, '');
-        const localFilePath = path.join(localDirectory, relativePath);
+            const relativePath = file.Key.replace(`${projectId}/`, '');
+            const localFilePath = path.join(localDirectory, relativePath);
 
-        // Ensure the local directory structure exists
-        fs.mkdirSync(path.dirname(localFilePath), { recursive: true });
+            // Ensure the local directory structure exists
+            fs.mkdirSync(path.dirname(localFilePath), { recursive: true });
 
-        const writeStream = fs.createWriteStream(localFilePath);
-        getResponse.Body.pipe(writeStream);
+            const data = await getResponse.Body.transformToByteArray();
+            fs.writeFileSync(localFilePath, Buffer.from(data));
 
-        await new Promise((resolve, reject) => {
-            writeStream.on('finish', resolve);
-            writeStream.on('error', reject);
-        });
-
-        console.log(`Downloaded ${file.Key} to ${localFilePath}`);
+            console.log(`Downloaded ${file.Key} to ${localFilePath}`);
+        } catch (err) {
+            console.error(`Error downloading ${file.Key} from S3:`, err.message);
+        }
     }
 }
 

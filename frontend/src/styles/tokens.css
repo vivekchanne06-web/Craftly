@@ -1,0 +1,278 @@
+/* =========================================================
+   CRAFTLY — DESIGN TOKENS
+   Authoritative CSS custom properties for all themes.
+   Import this file first; never override tokens ad-hoc.
+   ========================================================= */
+
+/* ── Dark theme (default) ── */
+@layer base {
+  :root,
+  .dark {
+    color-scheme: dark;
+
+    /* Background layers */
+    --color-bg:           #0b0f14;
+    --color-surface:      #11161d;
+    --color-surface-2:    #161c25;
+    --color-surface-3:    #1c2433;
+
+    /* Borders */
+    --color-border:       #222a35;
+    --color-border-focus: #374151;
+
+    /* Text */
+    --color-text:         #e2e8f0;
+    --color-text-muted:   #64748b;
+    --color-text-subtle:  #475569;
+
+    /* Accent (indigo) */
+    --color-accent:       #6366f1;
+    --color-accent-hover: #4f46e5;
+    --color-accent-dim:   rgba(99, 102, 241, 0.15);
+    --color-accent-subtle: rgba(99, 102, 241, 0.08);
+
+    /* Violet accent (restrained) */
+    --color-violet:       #8b5cf6;
+    --color-violet-dim:   rgba(139, 92, 246, 0.12);
+
+    /* Semantic */
+    --color-success:      #22c55e;
+    --color-success-dim:  rgba(34, 197, 94, 0.15);
+    --color-warning:      #f59e0b;
+    --color-warning-dim:  rgba(245, 158, 11, 0.15);
+    --color-error:        #ef4444;
+    --color-error-dim:    rgba(239, 68, 68, 0.15);
+
+    /* Typography — Afacad loaded locally via @fontsource in index.css */
+    --font-sans:  'Afacad', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    --font-mono:  'JetBrains Mono', 'Fira Code', 'Cascadia Code', monospace;
+
+    /* Spacing scale */
+    --space-1:  4px;
+    --space-2:  8px;
+    --space-3:  12px;
+    --space-4:  16px;
+    --space-5:  20px;
+    --space-6:  24px;
+    --space-8:  32px;
+    --space-10: 40px;
+    --space-12: 48px;
+    --space-16: 64px;
+
+    /* Border radius */
+    --radius-sm:  4px;
+    --radius-md:  8px;
+    --radius-lg:  12px;
+    --radius-xl:  16px;
+    --radius-full: 9999px;
+
+    /* Shadows */
+    --shadow-sm:   0 1px 2px rgba(0, 0, 0, 0.4);
+    --shadow-md:   0 4px 12px rgba(0, 0, 0, 0.4);
+    --shadow-lg:   0 8px 32px rgba(0, 0, 0, 0.5);
+    --shadow-glow: 0 0 20px rgba(99, 102, 241, 0.25);
+
+    /* Transitions */
+    --transition-fast:   150ms ease;
+    --transition-normal: 200ms ease;
+    --transition-slow:   300ms ease;
+
+    /* Z-index layers */
+    --z-base:    0;
+    --z-overlay: 10;
+    --z-modal:   100;
+    --z-toast:   1000;
+  }
+
+  /* ── Light theme ── */
+  .light {
+    color-scheme: light;
+
+    /* Background layers — white/slate */
+    --color-bg:           #f8fafc;
+    --color-surface:      #ffffff;
+    --color-surface-2:    #f1f5f9;
+    --color-surface-3:    #e2e8f0;
+
+    /* Borders */
+    --color-border:       #e2e8f0;
+    --color-border-focus: #cbd5e1;
+
+    /* Text */
+    --color-text:         #0f172a;
+    --color-text-muted:   #64748b;
+    --color-text-subtle:  #94a3b8;
+
+    /* Accent (indigo) */
+    --color-accent:       #4f46e5;
+    --color-accent-hover: #4338ca;
+    --color-accent-dim:   rgba(79, 70, 229, 0.1);
+    --color-accent-subtle: rgba(79, 70, 229, 0.05);
+
+    /* Violet accent */
+    --color-violet:       #7c3aed;
+    --color-violet-dim:   rgba(124, 58, 237, 0.08);
+
+    /* Semantic */
+    --color-success:      #16a34a;
+    --color-success-dim:  rgba(22, 163, 74, 0.1);
+    --color-warning:      #d97706;
+    --color-warning-dim:  rgba(217, 119, 6, 0.1);
+    --color-error:        #dc2626;
+    --color-error-dim:    rgba(220, 38, 38, 0.1);
+
+    /* Shadows — softer for light mode */
+    --shadow-sm:   0 1px 2px rgba(0, 0, 0, 0.06);
+    --shadow-md:   0 4px 12px rgba(0, 0, 0, 0.08);
+    --shadow-lg:   0 8px 32px rgba(0, 0, 0, 0.1);
+    --shadow-glow: 0 0 20px rgba(79, 70, 229, 0.15);
+  }
+}
+
+/* User-selected theme values. These declarations intentionally come last so
+   they are the single visual source of truth for both the legacy component
+   aliases and Tailwind's semantic token names. */
+@layer base {
+  :root {
+    color-scheme: light;
+    --card: #FFFFFF;
+    --ring: #6366F1;
+    --input: #E2E8F0;
+    --muted: #F1F5F9;
+    --accent: #E0E7FF;
+    --border: #E2E8F0;
+    --radius: 0.5rem;
+    --chart-1: #6366F1;
+    --chart-2: #8B5CF6;
+    --chart-3: #EC4899;
+    --chart-4: #FACC15;
+    --chart-5: #22D3EE;
+    --popover: #FFFFFF;
+    --primary: #6366F1;
+    --sidebar: #FFFFFF;
+    --spacing: 0.25rem;
+    --font-mono: Fira Code, ui-monospace, monospace;
+    --font-sans: Afacad, ui-sans-serif, sans-serif, system-ui;
+    --secondary: #E2E8F0;
+    --background: #F8FAFC;
+    --font-serif: Adamina, ui-serif, serif;
+    --foreground: #0F172A;
+    --destructive: #EF4444;
+    --shadow-blur: 0.5rem;
+    --shadow-color: #0F172A;
+    --sidebar-ring: #6366F1;
+    --shadow-spread: 0;
+    --letter-spacing: -0.025em;
+    --shadow-opacity: 0.05;
+    --sidebar-accent: #E0E7FF;
+    --sidebar-border: #E2E8F0;
+    --card-foreground: #0F172A;
+    --shadow-offset-x: 0;
+    --shadow-offset-y: 0.2rem;
+    --sidebar-primary: #6366F1;
+    --muted-foreground: #64748B;
+    --accent-foreground: #3730A3;
+    --popover-foreground: #0F172A;
+    --primary-foreground: #FFFFFF;
+    --sidebar-foreground: #0F172A;
+    --secondary-foreground: #1E293B;
+    --destructive-foreground: #FFFFFF;
+    --sidebar-accent-foreground: #3730A3;
+    --sidebar-primary-foreground: #FFFFFF;
+  }
+
+  .dark {
+    color-scheme: dark;
+    --card: #1E293B;
+    --ring: #8B5CF6;
+    --input: #334155;
+    --muted: #1E293B;
+    --accent: #3730A3;
+    --border: #334155;
+    --radius: 0.5rem;
+    --chart-1: #8B5CF6;
+    --chart-2: #A78BFA;
+    --chart-3: #FB7185;
+    --chart-4: #FDE047;
+    --chart-5: #67E8F9;
+    --popover: #1E293B;
+    --primary: #8B5CF6;
+    --sidebar: #1E293B;
+    --spacing: 0.25rem;
+    --font-mono: Fira Code, ui-monospace, monospace;
+    --font-sans: Afacad, ui-sans-serif, sans-serif, system-ui;
+    --secondary: #334155;
+    --background: #0F172A;
+    --font-serif: Adamina, ui-serif, serif;
+    --foreground: #F8FAFC;
+    --destructive: #F87171;
+    --shadow-blur: 0.7rem;
+    --shadow-color: #000000;
+    --sidebar-ring: #8B5CF6;
+    --shadow-spread: 0;
+    --letter-spacing: -0.025em;
+    --shadow-opacity: 0.3;
+    --sidebar-accent: #3730A3;
+    --sidebar-border: #334155;
+    --card-foreground: #F8FAFC;
+    --shadow-offset-x: 0;
+    --shadow-offset-y: 0.3rem;
+    --sidebar-primary: #8B5CF6;
+    --muted-foreground: #94A3B8;
+    --accent-foreground: #F8FAFC;
+    --popover-foreground: #F8FAFC;
+    --primary-foreground: #FFFFFF;
+    --sidebar-foreground: #F8FAFC;
+    --secondary-foreground: #F8FAFC;
+    --destructive-foreground: #FFFFFF;
+    --sidebar-accent-foreground: #F8FAFC;
+    --sidebar-primary-foreground: #FFFFFF;
+  }
+
+  :root,
+  .dark {
+    --color-bg: var(--background);
+    --color-surface: var(--card);
+    --color-surface-2: var(--muted);
+    --color-surface-3: var(--secondary);
+    --color-border: var(--border);
+    --color-border-focus: var(--ring);
+    --color-text: var(--foreground);
+    --color-text-muted: var(--muted-foreground);
+    --color-text-subtle: color-mix(in srgb, var(--muted-foreground) 68%, transparent);
+    --color-accent: var(--primary);
+    --color-accent-hover: color-mix(in srgb, var(--primary) 84%, black);
+    --color-accent-dim: color-mix(in srgb, var(--primary) 14%, transparent);
+    --color-accent-subtle: color-mix(in srgb, var(--primary) 7%, transparent);
+    --color-violet: var(--chart-2);
+    --color-violet-dim: color-mix(in srgb, var(--chart-2) 14%, transparent);
+    --color-success: #22C55E;
+    --color-success-dim: color-mix(in srgb, #22C55E 14%, transparent);
+    --color-warning: var(--chart-4);
+    --color-warning-dim: color-mix(in srgb, var(--chart-4) 16%, transparent);
+    --color-error: var(--destructive);
+    --color-error-dim: color-mix(in srgb, var(--destructive) 14%, transparent);
+  }
+}
+
+@theme inline {
+  --color-card: var(--card);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-muted: var(--muted);
+  --color-popover: var(--popover);
+  --color-primary: var(--primary);
+  --color-sidebar: var(--sidebar);
+  --color-secondary: var(--secondary);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-destructive: var(--destructive);
+  --color-card-foreground: var(--card-foreground);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-destructive-foreground: var(--destructive-foreground);
+}
