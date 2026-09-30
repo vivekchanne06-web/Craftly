@@ -16,15 +16,18 @@ app.use(cookies());
 app.use(passport.initialize());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
+const CORS_ORIGIN =
+    process.env.CORS_ORIGIN || "http://localhost:5173";
+
 app.use(cors({
-    origin: "http://localhost:5173",
+    origin: CORS_ORIGIN,
     credentials: true
 }));
 
 passport.use(new googleStrategy({
   clientID: process.env.GOOGLE_CLIENT_ID,
   clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-  callbackURL: "http://localhost/api/auth/google/callback"
+  callbackURL:process.env.GOOGLE_CALLBACK_URL || "http://localhost/api/auth/google/callback"
 }, (accessToken, refreshToken, profile, done) => {
     // Here you would typically find or create a user in your database
     // For this example, we'll just return the profile

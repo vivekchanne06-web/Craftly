@@ -6,15 +6,20 @@ import { sendAuthNotification } from "../config/mq.js";
 
 const router = Router();
 
+const FRONTEND_URL =
+    process.env.FRONTEND_URL || "http://localhost:5173";
+
+const NODE_ENV = process.env.NODE_ENV || "development";
+
 router.get('/google', passport.authenticate('google', {
     session: false,
     scope: ['profile', 'email']
 }));
 
-router.get('/google/callback',passport.authenticate('google', {
-        session: false,
-        failureRedirect: 'http://localhost:5173'
-    }),
+router.get('/google/callback', passport.authenticate('google', {
+    session: false,
+    failureRedirect: FRONTEND_URL
+}),
     async (req, res) => {
         try {
             const { id, displayName, emails, photos } = req.user;
@@ -53,7 +58,7 @@ router.get('/google/callback',passport.authenticate('google', {
 
             res.cookie('token', token, {
                 httpOnly: true,
-                secure: false,
+                secure: NODE_ENV === "production",
                 sameSite: 'lax',
                 path: '/',
                 maxAge: 60 * 60 * 1000
@@ -61,14 +66,14 @@ router.get('/google/callback',passport.authenticate('google', {
 
             console.log('JWT generated for:', user.email);
 
-            res.redirect('http://localhost:5173');
+            res.redirect(FRONTEND_URL);
         } catch (err) {
             console.error(
                 'Error during Google authentication:',
                 err
             );
 
-            res.redirect('http://localhost:5173');
+            res.redirect(FRONTEND_URL);
         }
     }
 );

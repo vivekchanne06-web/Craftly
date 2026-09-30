@@ -29,17 +29,29 @@ export default function WorkspacePage({ project, sandbox, onExit }) {
   const [selectedFile, setSelectedFile] = useState(null);
   const [activeCenterTab, setActiveCenterTab] = useState("preview"); // "preview" | "editor"
   const [refreshToken, setRefreshToken] = useState(0);
+  const [editorDirty, setEditorDirty] = useState(false);
   const readiness = useSandboxReadiness(sandboxId);
 
   const handleSelectFile = useCallback((filePath) => {
+    if (filePath !== selectedFile && editorDirty) {
+      const confirmed = window.confirm(
+        "This file has unsaved changes. Switch files and discard them?"
+      );
+      if (!confirmed) return;
+    }
+    setEditorDirty(false);
     setSelectedFile(filePath);
     setActiveCenterTab("editor");
-  }, []);
+  }, [editorDirty, selectedFile]);
 
   const handleCloseFile = useCallback(() => {
+    if (editorDirty && !window.confirm("This file has unsaved changes. Close it?")) {
+      return;
+    }
     setSelectedFile(null);
     setActiveCenterTab("preview");
-  }, []);
+    setEditorDirty(false);
+  }, [editorDirty]);
 
   /** Triggered by AI on stream complete — refreshes files and preview. */
   const handleAiComplete = useCallback(() => {
@@ -161,9 +173,11 @@ export default function WorkspacePage({ project, sandbox, onExit }) {
           overflow: "hidden",
         }}>
           <MonacoEditor
+            key={`${sandboxId}:${selectedFile}`}
             sandbox={sandbox}
             filePath={selectedFile}
             onClose={handleCloseFile}
+            onDirtyChange={setEditorDirty}
           />
         </div>
       )}
@@ -268,6 +282,8 @@ function FileTabIcon({ name = "" }) {
     js: "#f7df1e", jsx: "#61dafb", ts: "#3178c6", tsx: "#61dafb",
     html: "#e44d26", css: "#264de4", json: "#cbcb41", md: "#519aba",
     py: "#3572a5", sh: "#89e051", yml: "#cb171e", yaml: "#cb171e",
+    java: "#b07219", cpp: "#f34b7d", c: "#555555", go: "#375eab",
+    rs: "#dea584", xml: "#f26522",
   };
   return (
     <svg width="11" height="11" viewBox="0 0 24 24" fill="none"

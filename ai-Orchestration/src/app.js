@@ -4,10 +4,12 @@ import agentRouter from "./routes/agent.routes.js"
 
 const app = express();
 
+const CORS_ORIGIN =
+  process.env.CORS_ORIGIN || "http://localhost:5173";
 // Middleware
 app.use(morgan('dev'));
 app.use((req, res, next) => {
-  res.header("Access-Control-Allow-Origin", "http://localhost:5173");
+  res.header("Access-Control-Allow-Origin", CORS_ORIGIN);
   res.header("Access-Control-Allow-Methods", "GET,POST,OPTIONS");
   res.header("Access-Control-Allow-Headers", "Content-Type");
 

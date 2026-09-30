@@ -17,8 +17,8 @@ spec:
     spec:
       serviceAccountName: resource-manager
       containers:
-      - image:  sandbox:latest
-        imagePullPolicy: IfNotPresent
+      - image:  707582905055.dkr.ecr.ap-south-1.amazonaws.com/sandbox
+        imagePullPolicy: Always
         name:  main-sandbox-container
         resources:
           limits:
@@ -51,6 +51,12 @@ spec:
               secretKeyRef:
                 name: database
                 key: SANDBOX_MONGODB_URI
+          
+          - name: CORS_ORIGIN
+            value: "https://craftly.work.gd"
+
+          - name: PREVIEW_URL_TEMPLATE
+            value: "https://{sandboxId}.preview.craftly.work.gd"
                 
         readinessProbe:
           httpGet:

@@ -8,6 +8,13 @@ import Project from "../models/project.model.js";
 
 const router = Router();
 
+const PREVIEW_URL_TEMPLATE =
+    process.env.PREVIEW_URL_TEMPLATE ||
+    "http://{sandboxId}.preview.localhost";
+
+const getPreviewUrl = (sandboxId) =>
+    PREVIEW_URL_TEMPLATE.replace("{sandboxId}", sandboxId);
+
 router.post('/project', authMiddleware, async (req, res) => {
     const { title } = req.body;
 
@@ -61,7 +68,7 @@ router.post("/start", authMiddleware, async (req, res) => {
         return res.status(200).json({
             message: 'Connected to existing sandbox environment',
             sandboxId: activeSandboxId,
-            previewUrl: `http://${activeSandboxId}.preview.localhost`
+            previewUrl: getPreviewUrl(activeSandboxId)
         });
     }
 
@@ -80,7 +87,7 @@ router.post("/start", authMiddleware, async (req, res) => {
     return res.status(201).json({
         message: 'Sandbox environment created successfully',
         sandboxId,
-        previewUrl: `http://${sandboxId}.preview.localhost`
+        previewUrl: getPreviewUrl(sandboxId)
     });
 });
 

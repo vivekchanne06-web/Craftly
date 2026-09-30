@@ -17,27 +17,17 @@ import { readFile, updateFile } from "../../lib/api/agent.js";
 import { validateAgentConfig } from "../../lib/config/env.js";
 import { useTheme } from "../../app/useTheme.js";
 import Spinner from "../../components/ui/Spinner.jsx";
-
-const LANG_MAP = {
-  js: "javascript", jsx: "javascript", ts: "typescript", tsx: "typescript",
-  html: "html", css: "css", json: "json", md: "markdown", py: "python",
-  sh: "shell", bash: "shell", yml: "yaml", yaml: "yaml", toml: "ini",
-  env: "plaintext", txt: "plaintext",
-};
-
-function detectLanguage(filePath) {
-  const ext = filePath?.split(".").pop()?.toLowerCase();
-  return LANG_MAP[ext] || "plaintext";
-}
+import { detectLanguage } from "./language.js";
 
 /**
  * @param {{
  *   sandbox: { sandboxId: string },
  *   filePath: string,
  *   onClose: () => void,
+ *   onDirtyChange?: (dirty: boolean) => void,
  * }} props
  */
-export default function MonacoEditor({ sandbox, filePath, onClose }) {
+export default function MonacoEditor({ sandbox, filePath, onClose, onDirtyChange }) {
   const sandboxId = sandbox?.sandboxId;
   const { theme } = useTheme();
 
@@ -53,13 +43,9 @@ export default function MonacoEditor({ sandbox, filePath, onClose }) {
   // Validate agent config
   const { valid: configValid, error: configError } = validateAgentConfig();
 
-  const [prevPath, setPrevPath] = useState(filePath);
-  if (prevPath !== filePath) {
-    setPrevPath(filePath);
-    setStatus("loading");
-    setErrorMsg(null);
-    setIsDirty(false);
-  }
+  useEffect(() => {
+    onDirtyChange?.(isDirty);
+  }, [isDirty, onDirtyChange]);
 
   const loadFile = useCallback(async () => {
     if (!sandboxId || !filePath || !configValid) return;
@@ -71,13 +57,15 @@ export default function MonacoEditor({ sandbox, filePath, onClose }) {
       const text = await readFile(sandboxId, filePath, abortRef.current.signal);
       setContent(text);
       setEditorValue(text);
+      setIsDirty(false);
+      onDirtyChange?.(false);
       setStatus("ready");
     } catch (err) {
       if (err.name === "AbortError") return;
       setErrorMsg(err.message || "Failed to load file.");
       setStatus("error");
     }
-  }, [sandboxId, filePath, configValid]);
+  }, [sandboxId, filePath, configValid, onDirtyChange]);
 
   const handleSave = useCallback(async () => {
     if (!sandboxId || !filePath || !isDirty || status === "saving") return;
@@ -86,6 +74,7 @@ export default function MonacoEditor({ sandbox, filePath, onClose }) {
       await updateFile(sandboxId, filePath, editorValue);
       setContent(editorValue);
       setIsDirty(false);
+      onDirtyChange?.(false);
       setSaveMsg("saved");
       setTimeout(() => setSaveMsg(null), 2500);
       setStatus("ready");
@@ -93,7 +82,7 @@ export default function MonacoEditor({ sandbox, filePath, onClose }) {
       setErrorMsg(err.message || "Failed to save.");
       setStatus("error");
     }
-  }, [sandboxId, filePath, isDirty, editorValue, status]);
+  }, [sandboxId, filePath, isDirty, editorValue, status, onDirtyChange]);
 
   const handleClose = useCallback(() => {
     if (isDirty) {
@@ -116,6 +105,7 @@ export default function MonacoEditor({ sandbox, filePath, onClose }) {
       .then((text) => {
         setContent(text);
         setEditorValue(text);
+        onDirtyChange?.(false);
         setStatus("ready");
       })
       .catch((err) => {
@@ -125,7 +115,7 @@ export default function MonacoEditor({ sandbox, filePath, onClose }) {
       });
 
     return () => ctrl.abort();
-  }, [sandboxId, filePath, configValid]);
+  }, [sandboxId, filePath, configValid, onDirtyChange]);
 
   // Ctrl+S / Cmd+S handler
   useEffect(() => {
@@ -219,12 +209,13 @@ export default function MonacoEditor({ sandbox, filePath, onClose }) {
             theme={theme === "dark" ? "vs-dark" : "light"}
             onChange={handleEditorChange}
             options={{
+              automaticLayout: true,
               fontSize: 13,
               fontFamily: "var(--font-mono)",
               lineHeight: 1.6,
               minimap: { enabled: false },
               scrollBeyondLastLine: false,
-              wordWrap: "off",
+              wordWrap: "on",
               renderLineHighlight: "line",
               tabSize: 2,
               insertSpaces: true,

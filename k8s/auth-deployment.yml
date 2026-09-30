@@ -15,8 +15,8 @@ spec:
         app: auth
     spec:
       containers:
-      - image:  auth
-        imagePullPolicy: IfNotPresent
+      - image:  707582905055.dkr.ecr.ap-south-1.amazonaws.com/auth
+        imagePullPolicy: Always
         name:  auth-container
         resources:
           requests:
@@ -67,6 +67,19 @@ spec:
             secretKeyRef:
               name: jwt
               key: JWT_SECRET
+              
+        - name: CORS_ORIGIN
+          value: "https://craftly.work.gd"
+
+        - name: GOOGLE_CALLBACK_URL
+          value: "https://api.craftly.work.gd/api/auth/google/callback"
+
+        - name: FRONTEND_URL
+          value: "https://craftly.work.gd"
+
+        - name: NODE_ENV
+          value: "production"
+
         ports:
         - containerPort:  3000
           name: auth-http

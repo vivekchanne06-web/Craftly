@@ -11,6 +11,9 @@ const HOST_SUFFIXES = new Map([
   ["preview", 80],
 ]);
 
+const DOMAIN_SUFFIX =
+  process.env.DOMAIN_SUFFIX || "localhost";
+
 export const app = express();
 app.use(morgan("combined"));
 
@@ -26,9 +29,18 @@ function getRoute(hostHeader) {
   const host = hostHeader?.replace(/:\d+$/, "").toLowerCase();
   const parts = host?.split(".");
 
-  if (!host || parts.length !== 3 || parts[2] !== "localhost") {
-    return null;
-  }
+  if (!host) {
+  return null;
+}
+
+const suffix = DOMAIN_SUFFIX.split(".");
+
+if (
+  parts.length !== suffix.length + 2 ||
+  parts.slice(2).join(".") !== DOMAIN_SUFFIX
+) {
+  return null;
+}
 
   const [sandboxId, type] = parts;
   if (!SANDBOX_ID.test(sandboxId) || !HOST_SUFFIXES.has(type)) {

@@ -24,7 +24,7 @@ export async function createPod(sandboxId, projectId) {
             initContainers: [
                 {
                     name: "init-container",
-                    image: "template",
+                    image: "707582905055.dkr.ecr.ap-south-1.amazonaws.com/template",
                     imagePullPolicy: "IfNotPresent",
                     command: ["sh", "-c", "cp -r /workspace/. /seed/"],
                     volumeMounts: [
@@ -36,7 +36,7 @@ export async function createPod(sandboxId, projectId) {
                 },
                 {
                     name: "init-restore",
-                    image: "sync-agent",
+                    image: "707582905055.dkr.ecr.ap-south-1.amazonaws.com/sync-agent",
                     imagePullPolicy: "IfNotPresent",
                     command: ["node", "-e", `
 const { S3Client, ListObjectsV2Command, GetObjectCommand } = require('@aws-sdk/client-s3');
@@ -100,7 +100,7 @@ const localDir = '/workspace';
             ],
             containers: [
                 {
-                    image: "template",
+                    image: "707582905055.dkr.ecr.ap-south-1.amazonaws.com/template",
                     imagePullPolicy: "IfNotPresent",
                     name: 'sandbox-container',
                     ports: [{ containerPort: 5173, name: "http" }],
@@ -116,7 +116,7 @@ const localDir = '/workspace';
                     ]
                 },
                 {
-                    image: "agent",
+                    image: "707582905055.dkr.ecr.ap-south-1.amazonaws.com/agent",
                     imagePullPolicy: "IfNotPresent",
                     name: 'agent-container',
                     ports: [{ containerPort: 3000, name: "http" }],
@@ -132,7 +132,7 @@ const localDir = '/workspace';
                     ]
                 },
                 {
-                    image: "sync-agent",
+                    image: "707582905055.dkr.ecr.ap-south-1.amazonaws.com/sync-agent",
                     imagePullPolicy: "IfNotPresent",
                     name: 'sync-agent-container',
                     ports: [{ containerPort: 4000, name: "http" }],

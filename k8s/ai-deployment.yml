@@ -15,7 +15,7 @@ spec:
         app:  ai-server
     spec:
       containers:
-      - image:  ai-orchestration
+      - image:  707582905055.dkr.ecr.ap-south-1.amazonaws.com/ai-orchestration
         name:  ai-server
         resources:
           requests:
@@ -30,6 +30,13 @@ spec:
               secretKeyRef:
                 name: ai-secret
                 key: MISTRALAI_API_KEY
+
+          - name: CORS_ORIGIN
+            value: "https://craftly.work.gd"
+
+          - name: NODE_ENV
+            value: "production"
+
         livenessProbe:
           httpGet:
             path: /api/status/healthz

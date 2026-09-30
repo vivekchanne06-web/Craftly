@@ -9,6 +9,24 @@ import os from 'os';
 import cors from 'cors';
 
 const WORKING_DIR = process.env.WORKING_DIR || '/workspace';
+const WORKING_ROOT = path.resolve(WORKING_DIR);
+
+function resolveWorkspacePath(file) {
+  if (typeof file !== 'string' || !file.trim() || file.includes('\0')) {
+    throw new Error('A non-empty relative file path is required.');
+  }
+
+  const normalized = file.replace(/\\/g, '/');
+  if (normalized.startsWith('/') || /^[a-zA-Z]:\//.test(normalized)) {
+    throw new Error('Absolute file paths are not allowed.');
+  }
+
+  const resolved = path.resolve(WORKING_ROOT, normalized);
+  if (resolved !== WORKING_ROOT && !resolved.startsWith(`${WORKING_ROOT}${path.sep}`)) {
+    throw new Error('File path must stay inside the sandbox workspace.');
+  }
+  return resolved;
+}
 
 const app = express();
 const httpServer = http.createServer(app);
@@ -166,9 +184,14 @@ app.get("/read-files", async (req, res) => {
   }
 
   const fileList = files.split(',');
+  try {
+    fileList.forEach(resolveWorkspacePath);
+  } catch (err) {
+    return res.status(400).json({ message: err.message, status: 'error' });
+  }
 
   const results = await Promise.all(fileList.map(async (file) => {
-    const filePath = path.join(WORKING_DIR, file);
+    const filePath = resolveWorkspacePath(file);
     try {
       const content = await fs.promises.readFile(filePath, 'utf-8');
       return {
@@ -204,9 +227,18 @@ app.patch("/update-files", async (req, res) => {
     });
   }
 
+  try {
+    updates.forEach(({ file, content }) => {
+      resolveWorkspacePath(file);
+      if (typeof content !== 'string') throw new Error('File content must be a string.');
+    });
+  } catch (err) {
+    return res.status(400).json({ message: err.message, status: 'error' });
+  }
+
   const results = await Promise.all(updates.map(async (update) => {
     const { file, content } = update;
-    const filePath = path.join(WORKING_DIR, file);
+    const filePath = resolveWorkspacePath(file);
     try {
 
       console.log(path.dirname(filePath), filePath);
@@ -244,9 +276,18 @@ app.post("/create-files", async (req, res) => {
     });
   }
 
+  try {
+    files.forEach(({ file, content }) => {
+      resolveWorkspacePath(file);
+      if (typeof content !== 'string') throw new Error('File content must be a string.');
+    });
+  } catch (err) {
+    return res.status(400).json({ message: err.message, status: 'error' });
+  }
+
   const results = await Promise.all(files.map(async (fileObj) => {
     const { file, content } = fileObj;
-    const filePath = path.join(WORKING_DIR, file);
+    const filePath = resolveWorkspacePath(file);
     try {
 
       await fs.promises.mkdir(path.dirname(filePath), { recursive: true });
@@ -280,8 +321,13 @@ app.delete("/delete-files", async (req, res) => {
       status: 'error',
     })
   }
+  try {
+    files.forEach(resolveWorkspacePath);
+  } catch (err) {
+    return res.status(400).json({ message: err.message, status: 'error' });
+  }
   const results = await Promise.all(files.map(async (file) => {
-    const filePath = path.join(WORKING_DIR, file);
+    const filePath = resolveWorkspacePath(file);
     try {
       await fs.promises.unlink(filePath);
       return {

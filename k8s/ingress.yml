@@ -16,7 +16,7 @@ metadata:
     nginx.ingress.kubernetes.io/session-cookie-name: "route"
     nginx.ingress.kubernetes.io/session-cookie-path: "/"
     nginx.ingress.kubernetes.io/enable-cors: "true"
-    nginx.ingress.kubernetes.io/cors-allow-origin: "http://localhost:5173"
+    nginx.ingress.kubernetes.io/cors-allow-origin: "https://craftly.work.gd"
     nginx.ingress.kubernetes.io/cors-allow-credentials: "true"
     nginx.ingress.kubernetes.io/cors-allow-methods: "PUT, GET, POST, OPTIONS, DELETE"
   labels:
@@ -54,7 +54,7 @@ spec:
             port: 
               number: 80
 
-  - host: "*.preview.localhost"
+  - host: "*.preview.craftly.work.gd" 
     http:
       paths:
       - pathType: Prefix
@@ -65,7 +65,7 @@ spec:
             port: 
               number: 80
   
-  - host: "*.agent.localhost"
+  - host: "*.agent.craftly.work.gd"
     http:
       paths:
       - pathType: Prefix

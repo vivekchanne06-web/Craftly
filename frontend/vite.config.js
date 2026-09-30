@@ -22,12 +22,10 @@ export default defineConfig(({ mode }) => {
   }
 
   // Parse the dev proxy target URL so we can re-use its hostname/port.
-  let proxyHost = '127.0.0.1'
   let proxyPort = 8080
   if (devProxyTarget) {
     try {
       const u = new URL(devProxyTarget)
-      proxyHost = u.hostname
       proxyPort = parseInt(u.port || '80', 10)
     } catch { /* keep defaults */ }
   }

@@ -15,7 +15,7 @@ spec:
         app:  router
     spec:
       containers:
-      - image:  router
+      - image:  707582905055.dkr.ecr.ap-south-1.amazonaws.com/router
         name:  router-server
         resources:
           requests:
@@ -41,7 +41,11 @@ spec:
             valueFrom:
               secretKeyRef:
                 name: database
-                key: REDIS_URL    
+                key: REDIS_URL
+
+          - name: DOMAIN_SUFFIX
+            value: "craftly.work.gd" 
+                
         ports:
         - containerPort:  3000
           name:  my-name
