@@ -70,13 +70,14 @@ The platform is built as a set of **microservices**, containerised with **Docker
 > 📸 **Placeholder images** — replace these with real screenshots later.
 > Save your screenshots in `docs/images/` and change each image link below to `docs/images/<your-file>.png`.
 
-| Login | Projects Dashboard |
+| Login | AI Assistant Building an App |
 | :---: | :---: |
-| ![Login](https://placehold.co/640x360/0f172a/a78bfa/png?text=Login+Page) | ![Dashboard](https://placehold.co/640x360/0f172a/a78bfa/png?text=Projects+Dashboard) |
+| ![Login](https://github.com/vivekchanne06-web/Craftly/blob/main/login.png?raw=true) | ![AI Editor](https://github.com/vivekchanne06-web/Craftly/blob/main/editor.png?raw=true) |
 
-| AI Assistant Building an App 
+| Projects Dashboard
 | :---: |
-| ![AI Chat](https://placehold.co/640x360/0f172a/a78bfa/png?text=AI+Assistant+Chat) 
+| ![Dashboard](https://github.com/vivekchanne06-web/Craftly/blob/main/preview%20main.png?raw=true) 
+
 
 **Live app:** 👉 <https://www.craftly.work.gd/>
 
