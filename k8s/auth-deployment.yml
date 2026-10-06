@@ -72,10 +72,10 @@ spec:
           value: "https://craftly.work.gd"
 
         - name: GOOGLE_CALLBACK_URL
-          value: "https://api.craftly.work.gd/api/auth/google/callback"
+          value: "https://www.craftly.work.gd/api/auth/google/callback"
 
         - name: FRONTEND_URL
-          value: "https://craftly.work.gd"
+          value: "https://www.craftly.work.gd"
 
         - name: NODE_ENV
           value: "production"

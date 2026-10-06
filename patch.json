@@ -1,0 +1,1 @@
+[{"op":"replace","path":"/spec/ports/1/targetPort","value":"http"}]

@@ -21,7 +21,8 @@ const DEV_PROXY_TARGET = import.meta.env.VITE_DEV_PROXY_TARGET ?? "";
 // In this mode agent and preview requests are routed through the Vite server
 // using path-based prefixes (/sandbox-agent/<id>/... and /sandbox-preview/<id>/...)
 // instead of the hostname-based URLs that the production ingress uses.
-const IS_DEV_PROXY = Boolean(DEV_PROXY_TARGET);
+const IS_DEV_PROXY =
+  import.meta.env.DEV && Boolean(DEV_PROXY_TARGET);
 
 /**
  * Validates the agent URL template.
